@@ -48,4 +48,28 @@ export const registerUser = (payload, redirectUrl) => {
   };
 };
 
+// login de usuario
+export const loginUser = ({ email, password }, redirectUrl ) => {
+  return (dispatch) => {
+    axios({
+      url: '/auth/sign-in',
+      method:'post',
+      auth: {
+        username: email,
+        password
+      }
+    })
+    .then( ({ data }) =>{
+      document.cookie = `email=${data.user.email}`;
+      document.cookie = `name=${data.user.name}`;
+      document.cookie = `id=${data.user.id}`;
+      dispatch(loginRequest(data.user));
+    })
+    .then(() => {
+      window.location.href = redirectUrl;
+    })
+    .catch( e => dispatch(setError(e)) )
+  }
+};
+
 export { setFavorite as default }
